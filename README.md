@@ -1,21 +1,25 @@
 # FrameFind
 
-FrameFind is a visual-discovery app where people can search a topic and browse matching images in a responsive gallery. The warm paper background and deep teal accents create a calm, editorial feel distinct from the PixelPulse reference. The large, question-led hero makes the next action obvious, while quick-pick topic chips and a friendly empty state help users get started.
+FrameFind is a visual-discovery app where people can search a topic and browse matching images in a responsive gallery. The warm paper background and deep teal accents create a calm, editorial feel distinct from the PixelPulse reference. Quick-pick topic chips help users get started.
 
-## Part 1 — Scaffold and UI
+## Features
 
-- Semantic HTML structure and accessible search form.
-- Responsive CSS Grid gallery.
-- Quick-pick topic chips and a clear-search control.
-
-## Part 2 — Fetch and render
-
-- Listens for the search form's `submit` event and prevents the browser's default page reload.
-- Ignores blank queries and safely encodes multi-word searches with `encodeURIComponent`.
-- Fetches image files from the Wikimedia Commons API, checks `response.ok`, and parses the JSON response.
-- Builds a card for each result with `document.createElement` and `appendChild`, clearing the previous results first.
-- Shows a result count, lets users open the full image in a new tab, and wires the quick-pick chips to run searches.
+- Accessible search form and responsive CSS Grid gallery.
+- Quick-pick topics and clear-search control.
+- Wikimedia Commons image search with URL-encoded multi-word queries.
+- Loading spinner shown before the network request starts.
+- Friendly empty-results message when no usable images are returned.
+- Friendly error message when the request fails or the server returns a non-OK response.
+- Result count, lazy-loaded thumbnails, full-image links, and subtle card entrance animation.
+- Reduced-motion support for visitors who prefer less animation.
 
 ## Run locally
 
-Open `index.html` in a browser. Search for a topic such as `cats`, `ocean`, or `new york`. The app uses the public Wikimedia Commons API and does not require an API key.
+Open `index.html` in a browser and search for a topic such as `cats`, `ocean`, or `new york`. The app uses the public Wikimedia Commons API and does not require an API key.
+
+## Deploy — GitHub Pages
+
+The workflow in `.github/workflows/deploy.yml` publishes this static site to GitHub Pages whenever changes are pushed to `main`. In the repository, open **Settings → Pages** and set **Build and deployment → Source** to **GitHub Actions** if it is not already selected.
+
+- Repository: https://github.com/LohithaChimakurthi/FrameFind
+- Live site: https://lohithachimakurthi.github.io/FrameFind/
