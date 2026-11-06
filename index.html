@@ -48,7 +48,8 @@
         </div>
         <p id="result-count" class="result-count">Your results will appear here</p>
       </div>
-      <section id="results" class="results-grid" aria-live="polite" aria-label="Image search results"></section>
+      <div id="loading-state" class="loading-state" role="status" aria-live="polite" hidden><span class="spinner" aria-hidden="true"></span><span>Finding images for you…</span></div>
+      <section id="results" class="results-grid" aria-live="polite" aria-label="Image search results" aria-busy="false"></section>
       <div id="empty-state" class="empty-state">
         <span class="empty-icon" aria-hidden="true">✳</span>
         <h3>Your next favourite image starts with a search.</h3>
