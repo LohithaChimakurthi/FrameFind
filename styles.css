@@ -244,3 +244,44 @@ h2 { margin-bottom: 0; font-family: 'Playfair Display', serif; font-size: clamp(
   .result-card { transition: none; }
   .result-card:hover { transform: none; }
 }
+
+
+/* Part 3: visible loading, empty, and error feedback */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 190px;
+  color: var(--teal-dark);
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+.loading-state[hidden] { display: none; }
+
+.spinner {
+  width: 25px;
+  height: 25px;
+  border: 3px solid #cce8dc;
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: framefind-spin .75s linear infinite;
+}
+
+@keyframes framefind-spin {
+  to { transform: rotate(360deg); }
+}
+
+.result-card {
+  animation: framefind-appear .35s ease both;
+}
+
+@keyframes framefind-appear {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner, .result-card { animation: none; }
+}
