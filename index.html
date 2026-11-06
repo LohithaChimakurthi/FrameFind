@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="FrameFind helps you explore visual inspiration by topic." />
+  <title>FrameFind — Find your visual spark</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="FrameFind home">
+      <span class="brand-mark" aria-hidden="true">F</span>
+      <span>frame<span class="brand-accent">find</span></span>
+    </a>
+    <span class="header-note">A little inspiration goes a long way.</span>
+  </header>
+
+  <main class="page-shell">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">YOUR VISUAL DISCOVERY SPACE</p>
+      <h1 id="page-title">What are you<br /><span>curious about?</span></h1>
+      <p class="intro-copy">Search a subject and let your next idea find you. Explore places, details, colours and everything in between.</p>
+
+      <form id="search-form" class="search-panel">
+        <label for="search-input">Search for an image topic</label>
+        <div class="search-row">
+          <input id="search-input" name="query" type="search" placeholder="Try “coastal villages”..." autocomplete="off" />
+          <button id="search-button" type="submit">Search <span aria-hidden="true">↗</span></button>
+        </div>
+        <button id="clear-button" class="clear-button" type="reset">Clear search</button>
+      </form>
+
+      <nav class="quick-picks" aria-label="Suggested search topics">
+        <span class="quick-picks-label">QUICK PICKS</span>
+        <button class="chip" type="button">Nature</button>
+        <button class="chip" type="button">Architecture</button>
+        <button class="chip" type="button">Street style</button>
+        <button class="chip" type="button">Food</button>
+      </nav>
+    </section>
+
+    <section class="discover" aria-labelledby="discover-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">THE CANVAS</p>
+          <h2 id="discover-title">Your discoveries</h2>
+        </div>
+        <p id="result-count" class="result-count">Your results will appear here</p>
+      </div>
+      <section id="results" class="results-grid" aria-live="polite" aria-label="Image search results"></section>
+      <div id="empty-state" class="empty-state">
+        <span class="empty-icon" aria-hidden="true">✳</span>
+        <h3>Your next favourite image starts with a search.</h3>
+        <p>Enter a topic above or choose a quick pick to get started.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>FRAMEFIND</span>
+    <span>Collect ideas. Follow curiosity.</span>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
