@@ -1,11 +1,19 @@
-// FrameFind — Part 2: fetch image results and render them in the grid.
+// FrameFind — Part 3: loading, empty, and error states.
 
 const form = document.getElementById("search-form");
 const input = document.getElementById("search-input");
 const results = document.getElementById("results");
 const resultCount = document.getElementById("result-count");
 const emptyState = document.getElementById("empty-state");
+const loadingState = document.getElementById("loading-state");
 const quickPickButtons = document.querySelectorAll(".chip");
+let activeSearch = 0;
+
+function showEmptyState(title, message) {
+  emptyState.querySelector("h3").textContent = title;
+  emptyState.querySelector("p").textContent = message;
+  emptyState.hidden = false;
+}
 
 function render(items) {
   results.innerHTML = "";
@@ -39,19 +47,15 @@ function render(items) {
     results.appendChild(card);
   });
 
-  const renderedCount = results.children.length;
-  emptyState.hidden = renderedCount > 0;
-  if (renderedCount === 0) {
-    emptyState.querySelector("h3").textContent = "No matching images found.";
-    emptyState.querySelector("p").textContent = "Try another topic or choose a quick pick.";
-  }
-  return renderedCount;
+  return results.children.length;
 }
 
 async function searchImages(query) {
-  // Clear the previous search before showing the new results.
+  const searchId = ++activeSearch;
   results.innerHTML = "";
   emptyState.hidden = true;
+  loadingState.hidden = false;
+  results.setAttribute("aria-busy", "true");
   resultCount.textContent = `Searching for “${query}”…`;
 
   const url =
@@ -59,29 +63,54 @@ async function searchImages(query) {
     "&gsrsearch=" + encodeURIComponent(query) +
     "&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url&iiurlwidth=500&format=json&origin=*";
 
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`Image search failed (HTTP ${response.status}).`);
+  try {
+    // The loading indicator is visible before this request begins.
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
 
-  const data = await response.json();
-  const items = Object.values(data.query?.pages || {});
-  const count = render(items);
-  resultCount.textContent = `Showing ${count} ${count === 1 ? "result" : "results"} for “${query}”.`;
+    const data = await response.json();
+    // Ignore an older response if the user has already started another search.
+    if (searchId !== activeSearch) return;
+
+    const items = Object.values(data.query?.pages || {});
+    const count = render(items);
+
+    if (count === 0) {
+      showEmptyState(
+        "No images found for that search.",
+        "Try another word, or choose one of the quick picks above."
+      );
+      resultCount.textContent = `No results for “${query}”.`;
+    } else {
+      emptyState.hidden = true;
+      resultCount.textContent = `Showing ${count} ${count === 1 ? "result" : "results"} for “${query}”.`;
+    }
+  } catch (error) {
+    if (searchId !== activeSearch) return;
+    results.innerHTML = "";
+    showEmptyState(
+      "Something went wrong.",
+      "We couldn’t load the images. Check your connection and please try again."
+    );
+    resultCount.textContent = "Image search is temporarily unavailable.";
+  } finally {
+    if (searchId === activeSearch) {
+      loadingState.hidden = true;
+      results.setAttribute("aria-busy", "false");
+    }
+  }
 }
 
-form.addEventListener("submit", async (event) => {
+form.addEventListener("submit", (event) => {
   event.preventDefault();
   const query = input.value.trim();
-  if (!query) return;
-
-  try {
-    await searchImages(query);
-  } catch (error) {
-    results.innerHTML = "";
-    emptyState.hidden = false;
-    emptyState.querySelector("h3").textContent = "We couldn’t load those images.";
-    emptyState.querySelector("p").textContent = "Please check your connection and try again.";
-    resultCount.textContent = error.message;
+  if (!query) {
+    input.focus();
+    return;
   }
+  searchImages(query);
 });
 
 // Quick-pick chips fill the search box and run the same form submission.
@@ -94,9 +123,13 @@ quickPickButtons.forEach((button) => {
 
 // Reset returns the page to its original empty state.
 form.addEventListener("reset", () => {
+  activeSearch += 1;
   results.innerHTML = "";
-  emptyState.hidden = false;
-  emptyState.querySelector("h3").textContent = "Your next favourite image starts with a search.";
-  emptyState.querySelector("p").textContent = "Enter a topic above or choose a quick pick to get started.";
+  loadingState.hidden = true;
+  results.setAttribute("aria-busy", "false");
+  showEmptyState(
+    "Your next favourite image starts with a search.",
+    "Enter a topic above or choose a quick pick to get started."
+  );
   resultCount.textContent = "Your results will appear here";
 });
